@@ -1,0 +1,20 @@
+{
+  "name": "sanitizer",
+  "version": "0.0.1",
+  "description": "Sanitize Inputs",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vsots/sanitizer.git"
+  },
+  "author": "vsots",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/vsots/sanitizer/issues"
+  },
+  "homepage": "https://github.com/vsots/sanitizer#readme"
+}
