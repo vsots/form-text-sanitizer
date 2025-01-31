@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha"
   },
   "repository": {
     "type": "git",
@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/vsots/sanitizer/issues"
   },
-  "homepage": "https://github.com/vsots/sanitizer#readme"
+  "homepage": "https://github.com/vsots/sanitizer#readme",
+  "devDependencies": {
+    "mocha": "^11.1.0"
+  }
 }
