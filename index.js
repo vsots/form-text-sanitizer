@@ -1,6 +1,6 @@
 const findHTML = (str) => {
-    const regex = /<script.+?>/i;
-    return regex.test(str);
+    const regex = /(<script.*?>|<\/script.*?>|javascript:|<svg.*?>|alert\(|<a.*?>|<\/a.*?>)/sivg;
+    return [regex.test(str), str.match(regex)];
 }
 
 export default findHTML;
