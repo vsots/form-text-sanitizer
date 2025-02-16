@@ -207,4 +207,15 @@ describe('Regex Matching', function() {
         assert.equal(result6[0], true);
         assert.equal(result6[1].length, 2);
     })
+
+    /*
+    *   Extraneous Open Brackets
+    *   https://cheatsheetseries.owasp.org/cheatsheets/XSS_Filter_Evasion_Cheat_Sheet.html#extraneous-open-brackets
+    */
+    it('should match tags with extraneous open brackets', function() {
+        const testString = `<<SCRIPT>alert("XSS");//\<</SCRIPT>`;
+        const result = findHTML(testString);
+        assert.equal(result[0], true);
+        assert.equal(result[1].length, 3);
+    })    
 });
