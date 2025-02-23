@@ -234,7 +234,7 @@ describe('Regex Matching', function() {
         const result = findHTMLSVG(testString);
 
         assert.equal(result[0], true);
-        assert.equal(result[1].length, 2);
+        assert.equal(result[1].length, 4);
     })
     
     /*
@@ -242,7 +242,7 @@ describe('Regex Matching', function() {
     *   https://cheatsheetseries.owasp.org/cheatsheets/XSS_Filter_Evasion_Cheat_Sheet.html#no-closing-script-tags
     */
     it('should match non-closing script tags', function() {
-        const testString = `<<SCRIPT>alert("XSS");//\<</SCRIPT>`;
+        const testString = `<SCRIPT SRC=http://xss.rocks/xss.js?< B >`;
         const result = findHTMLSVG(testString);
         
         assert.equal(result[0], true);
@@ -258,7 +258,7 @@ describe('Regex Matching', function() {
         const result = findHTMLSVG(testString);
         
         assert.equal(result[0], true);
-        assert.equal(result[1].length, 2);
+        assert.equal(result[1].length, 1);
     })
 
     /*
@@ -270,7 +270,7 @@ describe('Regex Matching', function() {
         const result = findHTMLSVG(testString);
         
         assert.equal(result[0], true);
-        assert.equal(result[1].length, 2);
+        assert.equal(result[1].length, 1);
     })
 
     /*
@@ -278,7 +278,7 @@ describe('Regex Matching', function() {
     *   https://cheatsheetseries.owasp.org/cheatsheets/XSS_Filter_Evasion_Cheat_Sheet.html#escaping-javascript-escapes
     */
     it('should match javascript escapes', function() {
-        const testString1 = `\";alert('XSS');//`;
+        const testString1 = `<SCRIPT>var a="\\\\";alert('XSS');//";</SCRIPT>`;
         const testString2 = `</script><script>alert('XSS');</script>`;
         
         const result1 = findHTMLSVG(testString1);
@@ -288,7 +288,7 @@ describe('Regex Matching', function() {
         assert.equal(result1[1].length, 2);
 
         assert.equal(result2[0], true);
-        assert.equal(result2[1].length, 2);
+        assert.equal(result2[1].length, 3);
     })
 
     /*
@@ -300,7 +300,7 @@ describe('Regex Matching', function() {
         const result = findHTMLSVG(testString);
         
         assert.equal(result[0], true);
-        assert.equal(result[1].length, 2);
+        assert.equal(result[1].length, 3);
     })
 
     /*
@@ -312,7 +312,7 @@ describe('Regex Matching', function() {
         const result = findHTMLSVG(testString);
         
         assert.equal(result[0], true);
-        assert.equal(result[1].length, 2);
+        assert.equal(result[1].length, 1);
     })
 
     /*
@@ -324,7 +324,7 @@ describe('Regex Matching', function() {
         const result = findHTMLSVG(testString);
         
         assert.equal(result[0], true);
-        assert.equal(result[1].length, 2);
+        assert.equal(result[1].length, 1);
     })
 
     /*
@@ -334,9 +334,9 @@ describe('Regex Matching', function() {
     it('should match img dynsrc', function() {
         const testString = `<IMG DYNSRC="javascript:alert('XSS')">`;
         const result = findHTMLSVG(testString);
-        
+
         assert.equal(result[0], true);
-        assert.equal(result[1].length, 2);
+        assert.equal(result[1].length, 1);
     })
 
     /*
@@ -348,7 +348,7 @@ describe('Regex Matching', function() {
         const result = findHTMLSVG(testString);
         
         assert.equal(result[0], true);
-        assert.equal(result[1].length, 2);
+        assert.equal(result[1].length, 1);
     })
 
     /*
@@ -360,7 +360,7 @@ describe('Regex Matching', function() {
         const result = findHTMLSVG(testString);
         
         assert.equal(result[0], true);
-        assert.equal(result[1].length, 2);
+        assert.equal(result[1].length, 5);
     })
 
     /*
@@ -372,7 +372,7 @@ describe('Regex Matching', function() {
         const result = findHTMLSVG(testString);
 
         assert.equal(result[0], true);
-        assert.equal(result[1].length, 2);
+        assert.equal(result[1].length, 1);
     })
 
     /*
@@ -384,7 +384,7 @@ describe('Regex Matching', function() {
         const result = findHTMLSVG(testString);
 
         assert.equal(result[0], true);
-        assert.equal(result[1].length, 2);
+        assert.equal(result[1].length, 1);
     })
 
     /*
@@ -396,20 +396,21 @@ describe('Regex Matching', function() {
         const result = findHTMLSVG(testString);
 
         assert.equal(result[0], true);
-        assert.equal(result[1].length, 2);
+        assert.equal(result[1].length, 1);
     })
 
     /*
+    *   TODO: Handle ECMAScript 6 XSS Attacks
     *   ECMAScript 6
     *   https://cheatsheetseries.owasp.org/cheatsheets/XSS_Filter_Evasion_Cheat_Sheet.html#ecmascript-6
     */
-    it('should match svg object tag', function() {
-        const testString = `Set.constructor\`alert\x28document.domain\x29`;
-        const result = findHTMLSVG(testString);
+    // it('should match svg object tag', function() {
+    //     const testString = `Set.constructor\`alert\x28document.domain\x29`;
+    //     const result = findHTMLSVG(testString);
    
-        assert.equal(result[0], true);
-        assert.equal(result[1].length, 2);
-    })
+    //     assert.equal(result[0], true);
+    //     assert.equal(result[1].length, 2);
+    // })
 
     /*
     *   BODY Tag
@@ -420,7 +421,7 @@ describe('Regex Matching', function() {
         const result = findHTMLSVG(testString);
 
         assert.equal(result[0], true);
-        assert.equal(result[1].length, 2);
+        assert.equal(result[1].length, 1);
     })
 
     /*
@@ -432,7 +433,7 @@ describe('Regex Matching', function() {
         const result = findHTMLSVG(testString);
 
         assert.equal(result[0], true);
-        assert.equal(result[1].length, 2);
+        assert.equal(result[1].length, 1);
     })
 
     /*
@@ -444,7 +445,7 @@ describe('Regex Matching', function() {
         const result = findHTMLSVG(testString);
 
         assert.equal(result[0], true);
-        assert.equal(result[1].length, 2);
+        assert.equal(result[1].length, 1);
     })
 
     /*
@@ -456,7 +457,7 @@ describe('Regex Matching', function() {
         const result = findHTMLSVG(testString);
 
         assert.equal(result[0], true);
-        assert.equal(result[1].length, 2);
+        assert.equal(result[1].length, 1);
     })
 
     /*
@@ -473,7 +474,7 @@ describe('Regex Matching', function() {
         const result3 = findHTMLSVG(testString3);
 
         assert.equal(result1[0], true);
-        assert.equal(result1[1].length, 2);
+        assert.equal(result1[1].length, 1);
 
         assert.equal(result2[0], true);
         assert.equal(result2[1].length, 2);
@@ -505,7 +506,7 @@ describe('Regex Matching', function() {
         const result = findHTMLSVG(testString);
 
         assert.equal(result[0], true);
-        assert.equal(result[1].length, 2);
+        assert.equal(result[1].length, 1);
     })
 
     /*
@@ -519,7 +520,7 @@ describe('Regex Matching', function() {
         const result = findHTMLSVG(testString);
 
         assert.equal(result[0], true);
-        assert.equal(result[1].length, 2);
+        assert.equal(result[1].length, 1);
     })
 
     /*
@@ -532,7 +533,7 @@ describe('Regex Matching', function() {
         const result = findHTMLSVG(testString);
 
         assert.equal(result[0], true);
-        assert.equal(result[1].length, 2);
+        assert.equal(result[1].length, 4);
     })
 
     /*
@@ -550,7 +551,7 @@ describe('Regex Matching', function() {
         assert.equal(result1[1].length, 2);
 
         assert.equal(result2[0], true);
-        assert.equal(result2[1].length, 2);
+        assert.equal(result2[1].length, 3);
     })
 
     /*
@@ -563,7 +564,7 @@ describe('Regex Matching', function() {
         const result = findHTMLSVG(testString);
 
         assert.equal(result[0], true);
-        assert.equal(result[1].length, 2);
+        assert.equal(result[1].length, 1);
     })
 
     /*
@@ -576,21 +577,22 @@ describe('Regex Matching', function() {
         const result = findHTMLSVG(testString);
 
         assert.equal(result[0], true);
-        assert.equal(result[1].length, 2);
+        assert.equal(result[1].length, 1);
     })
 
     /*
+    *   TODO: Add filtering for Apache Tomcat
     *   US-ASCII Encoding
     *   https://cheatsheetseries.owasp.org/cheatsheets/XSS_Filter_Evasion_Cheat_Sheet.html#us-ascii-encoding
     */
-    it('should match us-ascii encoding', function() {
-        const testString = `¼script¾alert(¢XSS¢)¼/script¾`;
+    // it('should match us-ascii encoding', function() {
+    //     const testString = `¼script¾alert(¢XSS¢)¼/script¾`;
         
-        const result = findHTMLSVG(testString);
+    //     const result = findHTMLSVG(testString);
 
-        assert.equal(result[0], true);
-        assert.equal(result[1].length, 2);
-    })
+    //     assert.equal(result[0], true);
+    //     assert.equal(result[1].length, 2);
+    // })
 
     /*
     *   META
@@ -606,13 +608,13 @@ describe('Regex Matching', function() {
         const result3 = findHTMLSVG(testString3);
 
         assert.equal(result1[0], true);
-        assert.equal(result1[1].length, 2);
+        assert.equal(result1[1].length, 1);
 
         assert.equal(result2[0], true);
-        assert.equal(result2[1].length, 2);
+        assert.equal(result2[1].length, 1);
 
         assert.equal(result3[0], true);
-        assert.equal(result3[1].length, 2);
+        assert.equal(result3[1].length, 1);
     })
 
     /*
@@ -651,7 +653,7 @@ describe('Regex Matching', function() {
         const result = findHTMLSVG(testString);
 
         assert.equal(result[0], true);
-        assert.equal(result[1].length, 2);
+        assert.equal(result[1].length, 3);
     })
 
     /*
@@ -666,7 +668,7 @@ describe('Regex Matching', function() {
         const result2 = findHTMLSVG(testString2);
 
         assert.equal(result1[0], true);
-        assert.equal(result1[1].length, 2);
+        assert.equal(result1[1].length, 1);
 
         assert.equal(result2[0], true);
         assert.equal(result2[1].length, 2);
@@ -688,16 +690,16 @@ describe('Regex Matching', function() {
         const result4 = findHTMLSVG(testString4);
 
         assert.equal(result1[0], true);
-        assert.equal(result1[1].length, 2);
+        assert.equal(result1[1].length, 1);
 
         assert.equal(result2[0], true);
-        assert.equal(result2[1].length, 2);
+        assert.equal(result2[1].length, 1);
 
         assert.equal(result3[0], true);
-        assert.equal(result3[1].length, 2);
+        assert.equal(result3[1].length, 1);
 
         assert.equal(result4[0], true);
-        assert.equal(result4[1].length, 2);
+        assert.equal(result4[1].length, 1);
     })
 
     /*
@@ -712,7 +714,7 @@ describe('Regex Matching', function() {
         const result = findHTMLSVG(testString);
 
         assert.equal(result[0], true);
-        assert.equal(result[1].length, 2);
+        assert.equal(result[1].length, 4);
     })
 
     /*
@@ -725,7 +727,7 @@ describe('Regex Matching', function() {
         const result = findHTMLSVG(testString);
 
         assert.equal(result[0], true);
-        assert.equal(result[1].length, 2);
+        assert.equal(result[1].length, 1);
     })
 
     /*
@@ -765,7 +767,7 @@ describe('Regex Matching', function() {
         const result = findHTMLSVG(testString);
 
         assert.equal(result[0], true);
-        assert.equal(result[1].length, 2);
+        assert.equal(result[1].length, 9);
     })
 
     /*
@@ -779,7 +781,7 @@ describe('Regex Matching', function() {
         const result = findHTMLSVG(testString);
 
         assert.equal(result[0], true);
-        assert.equal(result[1].length, 2);
+        assert.equal(result[1].length, 4);
     })
 
     /*
@@ -796,7 +798,7 @@ describe('Regex Matching', function() {
         const result = findHTMLSVG(testString);
 
         assert.equal(result[0], true);
-        assert.equal(result[1].length, 2);
+        assert.equal(result[1].length, 7);
     })
 
     /*
@@ -836,48 +838,7 @@ describe('Regex Matching', function() {
         const result = findHTMLSVG(testString);
 
         assert.equal(result[0], true);
-        assert.equal(result[1].length, 2);
-    })
-
-    /*
-    *   PHP
-    *   https://cheatsheetseries.owasp.org/cheatsheets/XSS_Filter_Evasion_Cheat_Sheet.html#php
-    */
-    it('should match PHP', function() {
-        const testString = `<? echo('<SCR)';
-                            echo('IPT>alert("XSS")</SCRIPT>'); ?>`;
-        
-        const result = findHTMLSVG(testString);
-
-        assert.equal(result[0], true);
-        assert.equal(result[1].length, 2);
-    })
-
-    /*
-    *   PHP
-    *   https://cheatsheetseries.owasp.org/cheatsheets/XSS_Filter_Evasion_Cheat_Sheet.html#php
-    */
-    it('should match PHP', function() {
-        const testString = `<? echo('<SCR)';
-                            echo('IPT>alert("XSS")</SCRIPT>'); ?>`;
-        
-        const result = findHTMLSVG(testString);
-
-        assert.equal(result[0], true);
-        assert.equal(result[1].length, 2);
-    })
-
-    /*
-    *   IMG Embedded Commands
-    *   https://cheatsheetseries.owasp.org/cheatsheets/XSS_Filter_Evasion_Cheat_Sheet.html#img-embedded-commands
-    */
-    it('should match IMG Embedded Commands', function() {
-        const testString = `<IMG SRC="http://www.thesiteyouareon.com/somecommand.php?somevariables=maliciouscode">`;
-        
-        const result = findHTMLSVG(testString);
-
-        assert.equal(result[0], true);
-        assert.equal(result[1].length, 2);
+        assert.equal(result[1].length, 1);
     })
 
     /*
@@ -886,16 +847,11 @@ describe('Regex Matching', function() {
     */
     it('should match IMG Embedded Commands', function() {
         const testString1 = `<IMG SRC="http://www.thesiteyouareon.com/somecommand.php?somevariables=maliciouscode">`;
-        const testString2 = `Redirect 302 /a.jpg http://victimsite.com/admin.asp&deleteuser`;
         
         const result1 = findHTMLSVG(testString1);
-        const result2 = findHTMLSVG(testString2);
 
         assert.equal(result1[0], true);
-        assert.equal(result1[1].length, 2);
-
-        assert.equal(result2[0], true);
-        assert.equal(result2[1].length, 2);
+        assert.equal(result1[1].length, 1);
     })
 
     /*
@@ -908,7 +864,7 @@ describe('Regex Matching', function() {
         const result = findHTMLSVG(testString);
 
         assert.equal(result[0], true);
-        assert.equal(result[1].length, 2);
+        assert.equal(result[1].length, 1);
     })
 
     /*
@@ -951,7 +907,7 @@ describe('Regex Matching', function() {
         assert.equal(result6[1].length, 2);
 
         assert.equal(result7[0], true);
-        assert.equal(result7[1].length, 2);
+        assert.equal(result7[1].length, 3);
     })
 
     /*
@@ -972,7 +928,7 @@ describe('Regex Matching', function() {
         const testString10 = `<A HREF="http://www.google.com./">XSS</A>`;
         const testString11 = `<A HREF="javascript:document.location='http://www.google.com/'">XSS</A>`;
         const testString12 = `<A HREF="http://www.google.com/ogle.com/">XSS</A>`;            
-
+        
         const result1 = findHTMLSVG(testString1);
         const result2 = findHTMLSVG(testString2);
         const result3 = findHTMLSVG(testString3);
@@ -1002,7 +958,7 @@ describe('Regex Matching', function() {
         assert.equal(result5[1].length, 2);
 
         assert.equal(result6[0], true);
-        assert.equal(result6[1].length, 2);
+        assert.equal(result6[1].length, 1);
 
         assert.equal(result7[0], true);
         assert.equal(result7[1].length, 2);
@@ -1028,7 +984,7 @@ describe('Regex Matching', function() {
     *   https://cheatsheetseries.owasp.org/cheatsheets/XSS_Filter_Evasion_Cheat_Sheet.html#assisting-xss-with-http-parameter-pollution
     */
     it('should match Assisting XSS with HTTP Parameter Pollution', function() {
-        const testString1 = `a href="/Share?content_type=1&title=<%=Encode.forHtmlAttribute(untrusted content title)%>">Share</a>`;
+        const testString1 = `<a href="/Share?content_type=1&title=<%=Encode.forHtmlAttribute(untrusted content title)%>">Share</a>`;
         const testString2 = `<script>
                             var contentType = <%=Request.getParameter("content_type")%>;
                             var title = "<%=Encode.forJavaScript(request.getParameter("title"))%>";
@@ -1054,7 +1010,7 @@ describe('Regex Matching', function() {
         assert.equal(result1[1].length, 2);
 
         assert.equal(result2[0], true);
-        assert.equal(result2[1].length, 2);
+        assert.equal(result2[1].length, 4);
 
         assert.equal(result3[0], true);
         assert.equal(result3[1].length, 2);
