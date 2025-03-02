@@ -16,18 +16,19 @@ const closedBracketMatcher = /[\}\q{%7d|&rcub|&#125|&#0125|&#00125|&#000125|&#00
 const flags = "gisv";
 
 const htmlSvgErb = 
-    openAngleBracketMatcher.source +
+    "(?:" + openAngleBracketMatcher.source + ";?" + ")" + "+" +
     "(?:" + 
-        doubleQuoteMatcher.source + ".*?" + doubleQuoteMatcher.source + "|" +
-        singleQuoteMatcher.source + ".*?" + singleQuoteMatcher.source + "|" +
-        backtickMatcher.source + ".*?" + backtickMatcher.source + "|" +
+        doubleQuoteMatcher.source + ".*" + doubleQuoteMatcher.source + "|" +
+        singleQuoteMatcher.source + ".*" + singleQuoteMatcher.source + "|" +
+        backtickMatcher.source + ".*" + backtickMatcher.source + "|" +
         "(?!" + openAngleBracket.source + "|" + closedAngleBracket.source + ")." +
-    ")*" + 
-    closedAngleBracketMatcher.source + "?";
+    ")*" + "(?:" +
+        ".*" + closedAngleBracketMatcher.source + ";?" +
+    ")?";
 
 const htmlSvgErbReg = new RegExp(htmlSvgErb, flags);
 
-const mustache = openBracketMatcher.source + openBracketMatcher.source + ".*?" + closedBracketMatcher.source + closedBracketMatcher.source;
+const mustache = openBracketMatcher.source + ";?" + openBracketMatcher.source + ".*" + closedBracketMatcher.source + ";?" + closedBracketMatcher.source + ";?";
 
 const mustacheReg = new RegExp(mustache, flags);
 
@@ -78,10 +79,7 @@ const checkAndSanitizeString = (str) => {
     }
 
     const matches = htmlCheck.res.concat(mustacheCheck.res);
-
-    return {originalString: str, suggestedString, matches};
+    return { originalString: str, suggestedString, matches };
 }
-
-//console.log(findHTMLSVGERB("This is a test &lt1234gjfk onload=alert('XSS') > Testing <<some things> some more> and things"));
 
 export default checkAndSanitizeString;
