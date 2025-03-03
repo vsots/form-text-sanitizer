@@ -1,7 +1,7 @@
 {
-  "name": "sanitizer",
-  "version": "0.0.1",
-  "description": "Sanitize Inputs",
+  "name": "form-text-sanitizer",
+  "version": "0.1.0",
+  "description": "Sanitize strings — expecting text — from html, svg, erb, and mustache expressions.",
   "main": "index.js",
   "type": "module",
   "scripts": {
@@ -9,14 +9,31 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/vsots/sanitizer.git"
+    "url": "git+https://github.com/vsots/form-text-sanitizer.git"
   },
-  "author": "Vaggelis",
+  "keywords": [
+    "xss",
+    "html",
+    "svg",
+    "erb",
+    "mustache",
+    "security",
+    "secure",
+    "text",
+    "string",
+    "strings",
+    "form",
+    "input",
+    "sanitizer",
+    "sanitize",
+    "filter"
+  ],
+  "author": "vsotsdev",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/vsots/sanitizer/issues"
+    "url": "https://github.com/vsots/form-text-sanitizer/issues"
   },
-  "homepage": "https://github.com/vsots/sanitizer#readme",
+  "homepage": "https://github.com/vsots/form-text-sanitizer#readme",
   "devDependencies": {
     "mocha": "^11.1.0"
   }
