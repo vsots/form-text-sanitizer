@@ -56,6 +56,7 @@ const findMustache = (str) => {
 }
 
 const checkAndSanitizeString = (str) => {
+    if (typeof str !== "string") return new Error(`${typeof str} is not a string`);
     const htmlCheck = findHTMLSVGERB(str);
     let suggestedString = "";
 

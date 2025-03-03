@@ -3,6 +3,17 @@ import assert from 'assert';
 
 describe('String Matcher and Sanitizer', function() {
     /*
+    *   Non-Strings
+    */
+    it('should return an error when encountering a non-string', function() {
+        const testInvalidInput = 4;
+        const error = checkAndSanitizeString(testInvalidInput);
+
+        assert.equal(error instanceof Error, true);
+        assert.equal(error.message, 'number is not a string');
+    })
+
+    /*
     *   Basic HTML Sanitizing
     */
     it('should match basic tags', function() {
