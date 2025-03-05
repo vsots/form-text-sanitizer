@@ -2,7 +2,7 @@
   "name": "form-text-sanitizer",
   "version": "0.0.0-development",
   "description": "Sanitize strings — expecting text — from html, svg, erb, and mustache expressions.",
-  "main": "index.js",
+  "main": "./dist/index.js",
   "scripts": {
     "build": "tsc",
     "test": "mocha ./dist/test/"
