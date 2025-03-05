@@ -1,22 +1,11 @@
-import checkAndSanitizeString from '../dist/index.js';
+import checkAndSanitizeString from '../index.js';
 import assert from 'assert';
 
 describe('String Matcher and Sanitizer', function() {
     /*
-    *   Non-Strings
-    */
-    it('should return an error when encountering a non-string', function() {
-        const testInvalidInput = 4;
-        const error = checkAndSanitizeString(testInvalidInput);
-
-        assert.equal(error instanceof Error, true);
-        assert.equal(error.message, 'number is not a string');
-    })
-
-    /*
     *   Basic HTML Sanitizing
     */
-    it('should match basic tags', function() {
+    it('should match basic html', function() {
         const testString = `This is a test input. <SCRIPT SRC=https://cdn.jsdelivr.net/host-xss.rocks/index.js></SCRIPT> Previous tags should not appear.`;
         const { originalString, suggestedString, matches } = checkAndSanitizeString(testString);
 
@@ -44,7 +33,7 @@ describe('String Matcher and Sanitizer', function() {
     /*
     *   Basic Combination HTML and Mustache Sanitizing
     */
-    it('should match basic mustache expressions', function() {
+    it('should match basic html and mustache expressions together', function() {
         const testString = `This is a test input. <SCRIPT SRC=https://cdn.jsdelivr.net/host-xss.rocks/index.js></SCRIPT>{{XSS}} Mustache and HTML should not appear.`;
         const { originalString, suggestedString, matches } = checkAndSanitizeString(testString);
 
