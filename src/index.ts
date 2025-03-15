@@ -28,15 +28,15 @@ const mustache = openBracketMatcher.source + ";?" + openBracketMatcher.source + 
 const mustacheReg = new RegExp(mustache, flags);
 
 interface IntermediateResponse {
-    test: Boolean
-    res: Array<string>
-    matches: Array<number>
+    test: Boolean;
+    res: Array<string>;
+    matches: Array<number>;
 }
 
 interface FinalResponse {
-    originalString: string
-    suggestedString: string
-    matches: Array<string>
+    originalString: string;
+    suggestedString: string;
+    matches: Array<string>;
 }
 
 const findHTMLSVGERB = (str: string): IntermediateResponse => {

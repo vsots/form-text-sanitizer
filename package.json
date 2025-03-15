@@ -3,9 +3,10 @@
   "version": "0.0.0-development",
   "description": "Sanitize strings — expecting text — from html, svg, erb, and mustache expressions.",
   "main": "./dist/index.js",
+  "type": "module",
   "scripts": {
     "build": "tsc",
-    "test": "mocha ./dist/test/"
+    "test": "mocha"
   },
   "repository": "https://github.com/vsots/form-text-sanitizer.git",
   "keywords": [
@@ -36,7 +37,7 @@
     "@types/node": "^22.13.9",
     "mocha": "^11.1.0",
     "semantic-release": "^24.2.3",
-    "ts-node": "^10.9.2",
+    "tsx": "^4.19.3",
     "typescript": "^5.8.2"
   },
   "files": [

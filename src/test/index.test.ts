@@ -1,4 +1,4 @@
-import checkAndSanitizeString from '../index.js';
+import checkAndSanitizeString from '../index.ts';
 import assert from 'assert';
 
 describe('String Matcher and Sanitizer', function() {

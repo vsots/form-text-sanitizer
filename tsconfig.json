@@ -8,8 +8,6 @@
         "strict": true,
         "esModuleInterop": true,
         "skipLibCheck": true,
-        "types": ["mocha", "node"]
     },
-    "include": ["src"],
-    "exclude": ["node_modules", "dist"]
+    "include": ["src/index.ts"]
 }
