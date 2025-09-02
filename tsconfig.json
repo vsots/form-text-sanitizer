@@ -1,13 +1,12 @@
 {
     "compilerOptions": {
         "declaration": true,
-        "target": "ES2024",
-        "module": "ESNext",
+        "target": "esnext",
+        "module": "nodenext",
         "outDir": "dist",
-        "rootDir": "src",
+        "rootDir": "./",
         "strict": true,
-        "esModuleInterop": true,
-        "skipLibCheck": true,
+        "esModuleInterop": true
     },
-    "include": ["src/index.ts"]
+    "include": ["index.ts"]
 }

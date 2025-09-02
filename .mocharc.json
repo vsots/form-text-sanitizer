@@ -1,5 +1,5 @@
 {
-    "extensions": ["ts"],
+    "extensions": ["js"],
     "node-option": ["import=tsx"],
-    "spec": ["src/test/index.test.ts"]
+    "spec": ["./test/index.test.ts"]
 }

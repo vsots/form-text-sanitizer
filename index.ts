@@ -1,3 +1,5 @@
+import { promises as dns } from 'node:dns';
+
 const openAngleBracket = /<|%3c|&lt|&#0{0,6}60|&#x0{0,6}3c/gisv;
 const openAngleBracketMatcher = /[<\q{%3c|&lt|&#60|&#060|&#0060|&#00060|&#000060|&#0000060|&#00000060|&#x3c|&#x03c|&#x003c|&#x0003c|&#x00003c|&#x000003c|&#x0000003c}]/gisv;
 const closedAngleBracket = />|%3e|&gt|&#0{0,6}62|&#x0{0,6}3e/gisv;
@@ -7,6 +9,9 @@ const singleQuoteMatcher = /['\q{%27|&apos|&#39|&#039|&#0039|&#00039|&#000039|&#
 const backtickMatcher = /[`\q{%60|&DiacriticalGrave|&#96|&#096|&#0096|&#00096|&#000096|&#0000096|&#00000096|&#x60|&#x060|&#x0060|&#x00060|&#x000060|&#x0000060|&#x00000060}]/gisv;
 const openBracketMatcher = /[\{\q{%7b|&lcub|&#123|&#0123|&#00123|&#000123|&#0000123|&#00000123|&#000000123|&#x7b|&#x07b|&#x007b|&#x0007b|&#x00007b|&#x000007b|&#x0000007b}]/gisv;
 const closedBracketMatcher = /[\}\q{%7d|&rcub|&#125|&#0125|&#00125|&#000125|&#0000125|&#00000125|&#000000125|&#x7d|&#x07d|&#x007d|&#x0007d|&#x00007d|&#x000007d|&#x0000007d}]/gisv;
+const domainRegex = /^([^-_\W](([A-Za-z0-9-]{0,61})?[^-_\W])?\.)+(?!\d+$)[^-_\W]([A-Za-z0-9-]{0,61})?[^-_\W]\.?$/;
+const localRegex = /^(?:(?:(?:"[\x00-\x7F]*")|(?:\\[\x00-\x7F])|(?:[\w-!#\$%&'\*\+\/=\?\^`\{\|\}~]+))\.?)+(?<![^\\]\.)$/;
+const fullEmailRegex = /^(?:[^@"\\]|"[\x00-\x7F]*"|\\[\x00-\x7F])+@[^@]+$/;
 
 const flags = "gisv";
 
@@ -67,27 +72,65 @@ const findMustache = (str: string): IntermediateResponse => {
     return { test, res, matches };
 }
 
-const checkAndSanitizeString = (str: string): FinalResponse => {
-    const htmlCheck = findHTMLSVGERB(str);
-    let suggestedString = "";
+const sanitizeAndValidate = {
+    checkAndSanitizeString: (str: string): FinalResponse => {
+        const htmlCheck = findHTMLSVGERB(str);
+        let suggestedString = "";
 
-    if (htmlCheck.test) {
-        const lastIdx = htmlCheck.matches.length - 1;
-        const lastSubstrStart = htmlCheck.matches[lastIdx] + htmlCheck.res[lastIdx].length;
-        suggestedString = str.substring(0, htmlCheck.matches[0]) + str.substring(lastSubstrStart, str.length);
-    } else suggestedString = str;
+        if (htmlCheck.test) {
+            const lastIdx = htmlCheck.matches.length - 1;
+            const lastSubstrStart = htmlCheck.matches[lastIdx] + htmlCheck.res[lastIdx].length;
+            suggestedString = str.substring(0, htmlCheck.matches[0]) + str.substring(lastSubstrStart, str.length);
+        } else suggestedString = str;
 
-    const mustacheCheck = findMustache(suggestedString);
+        const mustacheCheck = findMustache(suggestedString);
 
-    if (mustacheCheck.test) {
-        const lastIdx = mustacheCheck.matches.length - 1;
-        const lastSubstrStart = mustacheCheck.matches[lastIdx] + mustacheCheck.res[lastIdx].length;
-        suggestedString = suggestedString.substring(0, mustacheCheck.matches[0]) + suggestedString.substring(lastSubstrStart, str.length);
+        if (mustacheCheck.test) {
+            const lastIdx = mustacheCheck.matches.length - 1;
+            const lastSubstrStart = mustacheCheck.matches[lastIdx] + mustacheCheck.res[lastIdx].length;
+            suggestedString = suggestedString.substring(0, mustacheCheck.matches[0]) + suggestedString.substring(lastSubstrStart, str.length);
+        }
+
+        const matches = htmlCheck.res.concat(mustacheCheck.res);
+
+        return { originalString: str, suggestedString, matches };
+    },
+    isValidDomain: async (domain: string) => {
+        if (domain.length <= 255 && domainRegex.test(domain)) {
+            try {
+                const dmnMXRecs = await dns.resolveMx(domain); // Checks if a domain is valid for email purposes
+
+                if (dmnMXRecs.length) {
+                    const nullMXTestExch = dmnMXRecs[0].exchange;
+                    const zeroMXTestPrty = dmnMXRecs[0].priority;
+                    if ( // Checks if mail records contains a Null MxRecord (https://dns.ultraproducts.support/hc/en-us/community/posts/26150271295003-NULL-MX-Records)
+                        dmnMXRecs.length === 1 && 
+                        (!nullMXTestExch || nullMXTestExch === ".") &&
+                        !zeroMXTestPrty
+                    ) return false;
+                    return true;
+                }
+                return false;
+            } catch(_) {
+                return false;
+            }
+        } else return false;
+    },
+    isValidLocal: (local: string) => {
+        if (local.length <= 64) return localRegex.test(local);
+        return false;
+    },
+    isValidFullEmailAddress: async (emailAddress: string) => {
+        const tEmail = emailAddress.trim();
+        if (tEmail.length >= 6 && tEmail.length <= 320 && fullEmailRegex.test(tEmail)) {
+            const splitRegex = /@(?![^@]*@)/;
+            const [local, domain] = tEmail.split(splitRegex);
+            const localValid = sanitizeAndValidate.isValidLocal(local);
+            
+            return localValid && await sanitizeAndValidate.isValidDomain(domain);
+        }
+        return false;
     }
-
-    const matches = htmlCheck.res.concat(mustacheCheck.res);
-
-    return { originalString: str, suggestedString, matches };
 }
 
-export default checkAndSanitizeString;
+export default sanitizeAndValidate;

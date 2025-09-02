@@ -21,10 +21,17 @@
     "string",
     "strings",
     "form",
+    "contact",
     "input",
     "sanitizer",
     "sanitize",
-    "filter"
+    "filter",
+    "validation",
+    "validate",
+    "email",
+    "E-Mail",
+    "E-mail",
+    "e-mail"
   ],
   "author": "vsotsdev",
   "license": "MIT",
@@ -35,8 +42,9 @@
   "devDependencies": {
     "@types/mocha": "^10.0.10",
     "@types/node": "^22.13.9",
+    "@types/sinon": "^17.0.4",
     "mocha": "^11.1.0",
-    "semantic-release": "^24.2.3",
+    "sinon": "^21.0.0",
     "tsx": "^4.19.3",
     "typescript": "^5.8.2"
   },
